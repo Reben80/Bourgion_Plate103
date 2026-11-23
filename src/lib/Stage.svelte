@@ -277,7 +277,7 @@
     onfliptri(kind, i, j)
   }
 
-  const markerR = $derived(projector ? 0.07 : 0.046)
+  const markerR = $derived(projector ? 0.036 : 0.022)
 
   const spotlight = $derived.by(() => {
     if (!highlight) return null
@@ -422,7 +422,7 @@
             flipMarkerTri(event, tri.kind, tri.i, tri.j)
         }}
       >
-        <polygon points={triPoints(tri.x, tri.y, markerR * 1.35)} />
+        <polygon points={triPoints(tri.x, tri.y, markerR * 1.15)} />
       </g>
     {/each}
   {/if}

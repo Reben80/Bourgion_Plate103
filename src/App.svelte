@@ -41,6 +41,8 @@
   let completed = $state<string[]>([])
   let root = $state<HTMLElement | null>(null)
   let generation = $state(0)
+  let immersive = $state(false)
+  let nativeFull = $state(false)
 
   const analysis = $derived(analyze(board))
   const shapes = $derived(shapesIn(board))
@@ -89,9 +91,19 @@
         event.preventDefault()
         undo()
       }
+      if (event.key === "Escape" && immersive) immersive = false
     }
+    const syncFull = () => {
+      nativeFull = fullscreenTarget() !== null
+    }
+    document.addEventListener("fullscreenchange", syncFull)
+    document.addEventListener("webkitfullscreenchange", syncFull)
     window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
+    return () => {
+      document.removeEventListener("fullscreenchange", syncFull)
+      document.removeEventListener("webkitfullscreenchange", syncFull)
+      window.removeEventListener("keydown", onKey)
+    }
   })
 
   function push() {
@@ -179,14 +191,61 @@
     localStorage.setItem("rings-theme", next)
   }
 
-  async function fullscreen() {
-    if (!root) return
-    if (document.fullscreenElement) await document.exitFullscreen()
-    else await root.requestFullscreen()
+  function fullscreenTarget() {
+    const doc = document as Document & { webkitFullscreenElement?: Element | null }
+    return document.fullscreenElement ?? doc.webkitFullscreenElement ?? null
+  }
+
+  function leaveNative() {
+    const doc = document as Document & { webkitExitFullscreen?: () => void }
+    if (typeof document.exitFullscreen === "function") {
+      const pending = document.exitFullscreen()
+      if (pending) void pending.catch(() => {})
+      return
+    }
+    doc.webkitExitFullscreen?.()
+  }
+
+  function requestNative(node: HTMLElement, allowPage = true): boolean {
+    const el = node as HTMLElement & { webkitRequestFullscreen?: () => void }
+    try {
+      if (typeof node.requestFullscreen === "function") {
+        const pending = node.requestFullscreen()
+        if (pending) {
+          void pending.catch(() => {
+            if (allowPage && node !== document.documentElement) {
+              if (requestNative(document.documentElement, false)) return
+            }
+            immersive = true
+          })
+        }
+        return true
+      }
+      if (typeof el.webkitRequestFullscreen === "function") {
+        el.webkitRequestFullscreen()
+        return true
+      }
+    } catch {
+      return false
+    }
+    return false
+  }
+
+  function fullscreen() {
+    if (immersive) {
+      immersive = false
+      return
+    }
+    if (fullscreenTarget()) {
+      leaveNative()
+      return
+    }
+    const node = root ?? document.documentElement
+    if (!requestNative(node)) immersive = true
   }
 </script>
 
-<div class="app" class:projector class:print={print3d} bind:this={root}>
+<div class="app" class:projector class:print={print3d} class:immersive bind:this={root}>
   <header class="top">
     <div>
       <p class="eyebrow">Bourgoin, Plate 103</p>
@@ -238,7 +297,13 @@
           {/if}
         </svg>
       </button>
-      <button class="icon-btn" type="button" aria-label="Full screen" onclick={fullscreen}>
+      <button
+        class="icon-btn"
+        type="button"
+        aria-label={nativeFull || immersive ? "Exit full screen" : "Full screen"}
+        aria-pressed={nativeFull || immersive}
+        onclick={fullscreen}
+      >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"

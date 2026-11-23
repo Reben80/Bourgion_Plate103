@@ -12,7 +12,11 @@
   --plus: #8d3b2e;
   --minus: #1f4f86;
   --stroke: #1a1612;
-  --overlay: #8d3b2e;
+  --overlay: #8a8175;
+  --mark-hex: #3d4ec4;
+  --mark-tri: #c47a12;
+  --mark-oval: #b43762;
+  --mark-glide: #1d7a6a;
   --shadow: 0 18px 50px rgba(40, 28, 16, 0.12);
   --serif: "Literata", Palatino, "Palatino Linotype", Georgia, serif;
   font-family: var(--serif);
@@ -35,7 +39,11 @@
   --plus: #e7b59a;
   --minus: #9ec4ea;
   --stroke: #f3ecdf;
-  --overlay: #e7b59a;
+  --overlay: #8d8478;
+  --mark-hex: #9aa6ff;
+  --mark-tri: #f0c36a;
+  --mark-oval: #f3a0bc;
+  --mark-glide: #7ddec8;
   --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
 }
 

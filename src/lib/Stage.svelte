@@ -350,44 +350,29 @@
     </g>
   {/if}
   {#if showOverlay}
-    <path d={lattice} fill="none" stroke="var(--overlay)" stroke-width="0.01" opacity="0.45" />
-    {#each drawnMarks as mark (mark.key)}
-      {#if mark.type === "hex"}
-        <polygon
-          fill="none"
-          stroke="var(--overlay)"
-          stroke-width="0.018"
-          points={hexPoints(mark.x, mark.y, 0.16)}
-        />
-      {:else if mark.type === "tri"}
-        <polygon
-          fill="none"
-          stroke="var(--overlay)"
-          stroke-width="0.018"
-          points={triPoints(mark.x, mark.y, 0.16)}
-        />
-      {:else if mark.type === "oval"}
-        <ellipse
-          cx={mark.x}
-          cy={mark.y}
-          rx="0.12"
-          ry="0.055"
-          fill="none"
-          stroke="var(--overlay)"
-          stroke-width="0.018"
-        />
-      {:else}
-        <line
-          x1={mark.x - mark.dx * 8}
-          y1={mark.y - mark.dy * 8}
-          x2={mark.x + mark.dx * 8}
-          y2={mark.y + mark.dy * 8}
-          stroke="var(--overlay)"
-          stroke-width="0.016"
-          stroke-dasharray="0.09 0.07"
-        />
-      {/if}
-    {/each}
+    <g class="symmetry" pointer-events="none">
+      <path d={lattice} fill="none" stroke="var(--overlay)" stroke-width="0.008" opacity="0.55" />
+      {#each drawnMarks as mark (mark.key)}
+        {#if mark.type === "hex"}
+          <polygon fill="var(--mark-hex)" points={hexPoints(mark.x, mark.y, 0.07)} />
+        {:else if mark.type === "tri"}
+          <polygon fill="var(--mark-tri)" points={triPoints(mark.x, mark.y, 0.062)} />
+        {:else if mark.type === "oval"}
+          <ellipse cx={mark.x} cy={mark.y} rx="0.05" ry="0.026" fill="var(--mark-oval)" />
+        {:else}
+          <line
+            x1={mark.x - mark.dx * 0.42}
+            y1={mark.y - mark.dy * 0.42}
+            x2={mark.x + mark.dx * 0.42}
+            y2={mark.y + mark.dy * 0.42}
+            stroke="var(--mark-glide)"
+            stroke-width="0.02"
+            stroke-linecap="round"
+            stroke-dasharray="0.045 0.03"
+          />
+        {/if}
+      {/each}
+    </g>
   {/if}
   {#if showMarkers}
     {#each keyMarkers as edge (`k${edge.i}:${edge.j}:${edge.dir}`)}

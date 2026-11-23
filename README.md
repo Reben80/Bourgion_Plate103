@@ -25,11 +25,9 @@ npm run preview
 
 ## Deploy
 
-`.github/workflows/pages.yml` tests the project, builds it with `VITE_BASE` set to `/<repository-name>/`, and deploys that build to GitHub Pages. After the repository is on GitHub and Pages is enabled for GitHub Actions, the site is at:
+The repository is [Reben80/Bourgion_Plate103](https://github.com/Reben80/Bourgion_Plate103). `.github/workflows/pages.yml` tests the project, builds it with `VITE_BASE` set to `/Bourgion_Plate103/`, and deploys that build to GitHub Pages. With Pages set to deploy from GitHub Actions, the site is at:
 
-`https://<github-user>.github.io/<repository-name>/`
-
-On the Reben80 account that address is `https://reben80.github.io/<repository-name>/`.
+https://reben80.github.io/Bourgion_Plate103/
 
 ## Credit and license
 
